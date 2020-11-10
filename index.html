@@ -3,20 +3,93 @@
 
 <head>
     <meta charset="utf-8">
-    <title>2000's Cover Band</title>
-    <script language="javascript" src="setlist.json"></script>
+    <title>Top 10 Songs of 2000</title>
+    <script language="javascript" src="setlist.js"></script>
+    <script language="javascript">
+        window.onload = function (data) {
+            var setlistString = JSON.stringify(setlist);
+            document.getElementById("serial").innerHTML = setlistString;
+        };
+    </script>
+    <style type="text/css">
+        body, select, input {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+        }
+        select {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 
 <body>
+    <h1 style="text-align: center;">2000's Cover Band</h1>
+    <p> Our band refuses to abandon the 2000's. The top 10 songs of 2000 are
+        our specialty.
+    </p>
+    <h2>Part 2: Serialized</h2>
+    <div id="serial"></div>
+
+    <h2>Part 3: User Friendly Set List</h2>
+    <div>
     <script language="javascript">
-        window.onload = function ( data ) {
-            var test = JSON.stringify(data);
-            alert(test);
-        };
+        var s1 = "";
+        for (i = 0; i < setlist.songs.length; i++) {
+            s1 += '<b>' + setlist.songs[i].title + '</b><br />';
+            s1 += 'by ' + setlist.songs[i].artist + '<br />';
+            s1 += 'Genre(s): ';
+            for (j = 0; j < setlist.songs[i].genres.length; j++) {
+                if (j == setlist.songs[i].genres.length - 1)
+                    s1 += setlist.songs[i].genres[j] + "<br />"
+                else
+                    s1 += setlist.songs[i].genres[j] + ", ";
+            }
+            s1 += 'Released in ' + setlist.songs[i].year + '<br /><br />';
+        }
+        document.writeln(s1);
     </script>
-    
-    <h1>2000's Cover Band</h1>
-    Loading...
+    </div>
+    <h2>Part 4: Filter by Genre</h2>
+    <form>
+        <script language="javascript">
+            var genres = new Array();
+            for (i = 0; i < setlist.songs.length; i++) {
+                for (j = 0; j < setlist.songs[i].genres.length; j++) {
+                    var currGenre = setlist.songs[i].genres[j];
+                    if (!genres.includes(currGenre))
+                        genres.push(currGenre);
+                }
+            }
+
+            var s2 = "<select id='genre' name='genre'>";
+            for (k = 0; k < genres.length; k++) {
+                s2 += '<option value="' + genres[k] + '">';
+                s2 += genres[k] + '</option>'
+            }
+            s2 += "</select>";
+            s2 += "<input type='button' value='Filter' onclick='findSongs()'>";
+            document.writeln(s2);
+        </script>
+            <div><b>Song Matches:</b>
+                <div id=match></div>
+            </div>
+        <script>
+            function findSongs() {
+                var desired = document.getElementById("genre").value;
+                var s3 = "<ul>";
+                for (i = 0; i < setlist.songs.length; i++) {
+                    for (j = 0; j < setlist.songs[i].genres.length; j++) {
+                        if (setlist.songs[i].genres[j] == desired) {
+                            s3 += '<li>' + setlist.songs[i].title + '</li>';
+                        }
+                    }
+                }
+                s3 += "</ul>";
+                document.getElementById("match").innerHTML = s3;
+                document.getElementById("match").scrollIntoView();
+            }
+        </script>
+</form>
 </body>
 
 </html>
